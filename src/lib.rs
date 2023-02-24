@@ -5,7 +5,7 @@ use regex::Regex;
 
 use std::collections::{BTreeMap, HashMap};
 use std::io;
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 
 lazy_static! {
     static ref HELP_RE: Regex = Regex::new(r"^#\s+HELP\s+(\w+)\s+(.+)$").unwrap();
@@ -164,10 +164,10 @@ pub struct SummaryCount {
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct Labels(HashMap<String, String>);
+pub struct Labels(pub HashMap<String, String>);
 
 impl Labels {
-    fn new() -> Labels {
+    pub fn new() -> Labels {
         Labels(HashMap::new())
     }
     fn parse(s: &str) -> Labels {
@@ -187,6 +187,9 @@ impl Labels {
     pub fn get(&self, name: &str) -> Option<&str> {
         self.0.get(name).map(|x| x.as_str())
     }
+    pub fn set(&mut self, key: String, value: String) -> Option<&str> {
+        self.0.insert(key, value)
+    }
 }
 
 impl Deref for Labels {
@@ -194,6 +197,12 @@ impl Deref for Labels {
 
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl DerefMut for Labels {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
     }
 }
 
