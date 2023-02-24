@@ -188,7 +188,7 @@ impl Labels {
         self.0.get(name).map(|x| x.as_str())
     }
     pub fn set(&mut self, key: String, value: String) -> Option<&str> {
-        self.0.insert(key, value)
+        sdfself.0.insert(key, value).map(|v| &*v)
     }
 }
 
